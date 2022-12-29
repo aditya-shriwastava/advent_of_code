@@ -27,10 +27,9 @@ int main(int argc, char** argv){
         }
       }
       curr = 0;
-      break;
+    }else{
+      curr += atoi(buf);
     }
-
-    curr += atoi(buf);
   }
 
   fclose(fd);
