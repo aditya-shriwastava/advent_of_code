@@ -27,9 +27,10 @@ int main(int argc, char** argv){
         }
       }
       curr = 0;
-    }else{ // CASE: Has calory
-      curr += atoi(buf);
+      break;
     }
+
+    curr += atoi(buf);
   }
 
   fclose(fd);
