@@ -28,46 +28,39 @@ int main(int argc, char** argv){
     return -1;
   }
 
-  char buf0[100];
-  char buf1[100];
-  char buf2[100];
-  bool item[52][3]; // Present or not
+  char buf[3][100];
+  bool item[3][52]; // Present or not
   int sum = 0;
 
-  while(fgets(buf0, 100, fd)){
+  while(fgets(buf[0], 100, fd)){
     // 1. Get items
-    fgets(buf1, 100, fd);
-    fgets(buf2, 100, fd);
+    fgets(buf[1], 100, fd);
+    fgets(buf[2], 100, fd);
 
     // 1. Clear item
     for(int i=0; i<3; i++){
       for(int j=0; j<52; j++){
-        item[j][i] = false;
+        item[i][j] = false;
       }
     }
 
     // 2. Get length of buf
-    int len0 = strlen(buf0) - 1;
-    buf0[len0] = '\0';
-    int len1 = strlen(buf1) - 1;
-    buf1[len1] = '\0';
-    int len2 = strlen(buf2) - 1;
-    buf2[len2] = '\0';
+    int len[3];
+    for(int i=0; i<3; i++){
+      len[i] = strlen(buf[i]) - 1;
+      buf[i][len[i]] = '\0';
+    }
 
     // 3. Fill item
-    for(int i=0; i<len0; i++){
-      item[get_priority(buf0[i]) - 1][0] = true;
-    }
-    for(int i=0; i<len1; i++){
-      item[get_priority(buf1[i]) - 1][1] = true;
-    }
-    for(int i=0; i<len2; i++){
-      item[get_priority(buf2[i]) - 1][2] = true;
+    for(int i=0; i<3; i++){
+      for(int j=0; j<len[i]; j++){
+        item[i][get_priority(buf[i][j]) - 1] = true;
+      }
     }
 
     // 4. Find common
     for(int i=0; i<52; i++){
-      if(item[i][0] && item[i][1] && item[i][2]){
+      if(item[0][i] && item[1][i] && item[2][i]){
         printf("%d\n", i + 1);
         sum += i + 1;
         break;
