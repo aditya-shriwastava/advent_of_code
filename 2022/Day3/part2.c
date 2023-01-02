@@ -37,28 +37,28 @@ int main(int argc, char** argv){
     fgets(buf[1], 100, fd);
     fgets(buf[2], 100, fd);
 
-    // 1. Clear item
+    // 2. Clear item
     for(int i=0; i<3; i++){
       for(int j=0; j<52; j++){
         item[i][j] = false;
       }
     }
 
-    // 2. Get length of buf
+    // 3. Get length of buf
     int len[3];
     for(int i=0; i<3; i++){
       len[i] = strlen(buf[i]) - 1;
       buf[i][len[i]] = '\0';
     }
 
-    // 3. Fill item
+    // 4. Fill item
     for(int i=0; i<3; i++){
       for(int j=0; j<len[i]; j++){
         item[i][get_priority(buf[i][j]) - 1] = true;
       }
     }
 
-    // 4. Find common
+    // 5. Find common
     for(int i=0; i<52; i++){
       if(item[0][i] && item[1][i] && item[2][i]){
         printf("%d\n", i + 1);
