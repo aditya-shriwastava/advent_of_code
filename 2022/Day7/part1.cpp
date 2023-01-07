@@ -27,7 +27,6 @@ struct File{
 struct Dir{
   int n_files; // Number of files
   int n_dirs; // Number of dirs
-  int size; // Size of dir
   char name[50]; // Name of dir
 	struct Dir* parent; // Parent dir (NULL if root)
 	struct File* files[1000]; // List of files in this dir
@@ -59,7 +58,6 @@ void mkdir(struct Dir* curr_dir, char* dir_name){
   curr_dir->dirs[n - 1] = calloc(1, sizeof(struct Dir));
   curr_dir->dirs[n - 1]->n_files = 0;
   curr_dir->dirs[n - 1]->n_dirs = 0;
-  curr_dir->dirs[n - 1]->size = 0;
   strcpy(curr_dir->dirs[n - 1]->name, dir_name);
   curr_dir->dirs[n - 1]->parent = curr_dir;
 }
@@ -69,14 +67,13 @@ void touch(struct Dir* curr_dir, char* file_name, int file_size){
   curr_dir->files[n - 1] = calloc(1, sizeof(struct File));
   strcpy(curr_dir->files[n - 1]->name, file_name);
   curr_dir->files[n - 1]->size = file_size;
-  curr_dir->size += file_size;
 }
 
 void print_tree(struct Dir* curr_dir, int indent){
  for(int j=0; j<indent; j++){
    printf("  ");
  }
- printf("%s -- %d\n", curr_dir->name, curr_dir->size);
+ printf("%s\n", curr_dir->name);
  indent++;
  for(int i=0; i<curr_dir->n_files; i++){
    for(int j=0; j<indent; j++){
@@ -90,7 +87,7 @@ void print_tree(struct Dir* curr_dir, int indent){
 }
 
 void test_dir_tree(){
-  struct Dir root = {0, 0, 0, "/", NULL};
+  struct Dir root = {0, 0, "/", NULL};
   struct Dir* curr_dir = &root;
   
   touch(curr_dir, "a.txt", 100);
@@ -171,36 +168,43 @@ void populate_dir(struct Dir* dir, FILE* fd){
   }
 }
 
-/* int sum_dir_size(struct Dir* dir){ */
-/*   int sum = 0; */
-/*   for(int i=0; i<dir->n_dirs; i++){ */
-/*     if(dir->dirs[i]->size <= 100000){ */
-/*       sum += dir->dirs[i]->size; */
-/*     } */
-/*     printf("%s: %d + %d\n",dir->dirs[i]->name, sum, sum_dir_size(dir->dirs[i])); */
-/*     sum += sum_dir_size(dir->dirs[i]); */
-/*     printf("%d\n", sum); */
-/*   } */
-/*   return sum; */
-/* } */
+int sum_dir_size(struct Dir* curr_dir, int* sum_ptr){
+  int dir_size = 0;
+
+  for(int i=0; i<curr_dir->n_files; i++){
+    dir_size += curr_dir->files[i]->size;
+  }
+
+  for(int i=0; i<curr_dir->n_dirs; i++){
+    int size = sum_dir_size(curr_dir->dirs[i], sum_ptr);
+    if(size <= 100000){
+      printf("Dir: %s of size: %d is less that 100000\n", curr_dir->dirs[i]->name, size);
+      *sum_ptr += size;
+    }
+    dir_size += size;
+  }
+
+  return dir_size;
+}
 
 int main(int argc, char** argv){
   /* test_dir_tree(); */
   /* return 0; */
 
-  FILE* fd = fopen("./test.txt", "r");
+  FILE* fd = fopen("./data.txt", "r");
   if(fd == NULL){
     printf("Unable to open data.txt");
     return -1;
   }
 
-  struct Dir root = {0, 0, 0, "/", NULL};
+  struct Dir root = {0, 0, "/", NULL};
   populate_dir(&root, fd);
   print_tree(&root, 0);
 
-  /* int sum = sum_dir_size(&root); */
-  /* printf("Sum: %d\n", sum); */
-
+  int sum = 0;
+  sum_dir_size(&root, &sum);
+  printf("Sum: %d\n", sum);
+  
   fclose(fd);
   return 0;
 }
