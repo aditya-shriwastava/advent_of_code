@@ -115,15 +115,7 @@ int count_visible(struct Grid* gd){
   return total;
 }
 
-void test(){
-  char ch = '0';
-  printf("%d\n", ch);
-}
-
 int main(int argc, char** argv){
-  /* test(); */
-  /* return 0; */
-
   FILE* fd = fopen("./data.txt", "r");
   if(fd == NULL){
     printf("Unable to open data.txt");
