@@ -20,17 +20,17 @@ int get_word(char* buf, char* word){
 
 
 struct File{
-	char name[50]; // File name
-	int size; // File size in bytes
+  char name[50]; // File name
+  int size; // File size in bytes
 };
 
 struct Dir{
   int n_files; // Number of files
   int n_dirs; // Number of dirs
   char name[50]; // Name of dir
-	struct Dir* parent; // Parent dir (NULL if root)
-	struct File* files[1000]; // List of files in this dir
-	struct Dir* dirs[1000]; // List of dirs in this dir
+  struct Dir* parent; // Parent dir (NULL if root)
+  struct File* files[1000]; // List of files in this dir
+  struct Dir* dirs[1000]; // List of dirs in this dir
 };
 
 struct Dir* cd(struct Dir* curr_dir, char* dir_name){
